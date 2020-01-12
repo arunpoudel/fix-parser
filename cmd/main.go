@@ -17,6 +17,9 @@ func main() {
 		m, err := parser.Parse()
 		if err == fix.ErrEof {
 			break
+		} else if err != nil {
+			// Skip any other error
+			continue
 		}
 		fmt.Println(fmt.Sprintf("Symbol: %s", m.Symbol))
 		for _, entry := range m.Entries {
