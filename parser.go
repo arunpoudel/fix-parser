@@ -1,7 +1,5 @@
 package fix_parser
 
-// TODO: Write benchmarks
-
 import (
 	"errors"
 	"io"
@@ -22,6 +20,8 @@ type Parser struct {
 	incorrectMessages int
 }
 
+// Parse reads the message from io.Reader,
+// parses it and returns a message or an error
 func (p *Parser) Parse() (*Message, error) {
 	m := NewMessage()
 	p.bodyLength = 0
@@ -72,10 +72,12 @@ func (p *Parser) Parse() (*Message, error) {
 	return m, err
 }
 
+// NumCorrectMessages returns the number of correct message read frm the reader
 func (p *Parser) NumCorrectMessages() int {
 	return p.correctMessages
 }
 
+// NumIncorrectMessages returns the number of incorrect message read frm the reader
 func (p *Parser) NumIncorrectMessages() int {
 	return p.incorrectMessages
 }
@@ -84,6 +86,7 @@ func (p *Parser) scan() (tok Token, lit string) {
 	return p.s.Scan()
 }
 
+// NewParser creates a new parser for FIX4.4 message parsing
 func NewParser(r io.Reader, separator string) *Parser {
 	return &Parser{s: NewScanner(r, separator)}
 }

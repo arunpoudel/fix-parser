@@ -11,6 +11,13 @@ type Scanner struct {
 	separator string
 }
 
+// Scan tokenizes a literal and return a Token and
+// the literal that was tokenized. The token can be
+// used to determine which part of the message we
+// are at, eg: if the literal is "8" and the next rune
+// after it is "=", then it tokenized the literal "8" is
+// a tag. And if the literal is "=", then anything between "="
+// and SEPARATOR is a value associated tag
 func (s *Scanner) Scan() (tok Token, lit string) {
 	ch := s.read()
 
@@ -24,12 +31,16 @@ func (s *Scanner) Scan() (tok Token, lit string) {
 		return SEPARATOR, string(ch)
 	}
 
+	// Rollback the previously read rune to the buffer
+	// as it is neither a tagvalue separator or a separator
+	// which means that it is either a tag or a value, and
+	// we don't want to miss the value
 	s.unread()
 	return s.readTagOrValue()
 }
 
 // read reads the next rune from the buffered reader.
-// Returns the rune(0) if an error occurs (or io.EOF is returned).
+// Returns the rune(0) if an error occurs (or eof is returned).
 func (s *Scanner) read() rune {
 	ch, _, err := s.r.ReadRune()
 	if err != nil {
@@ -50,6 +61,8 @@ func (s *Scanner) readTagOrValue() (Token, string) {
 		if ch := s.read(); ch == eof {
 			break
 		} else if isTagValueSeparator(ch) {
+			// If the next character is "=" then this is
+			// definitely a tag
 			token = TAG
 			s.unread()
 			break
@@ -58,6 +71,7 @@ func (s *Scanner) readTagOrValue() (Token, string) {
 			s.unread()
 			break
 		} else {
+			// else it is a value associated with a tag
 			_, _ = buf.WriteRune(ch)
 		}
 	}

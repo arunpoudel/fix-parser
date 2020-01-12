@@ -3,15 +3,19 @@ package fix_parser
 type Token int
 
 const (
-	ILLEGAL Token = iota
-	EOF
-	EOM // End of message
+	// End of File
+	EOF Token = iota
 
+	// Separator
 	SEPARATOR
+	// Message tag
 	TAG
+	// Value associated with a Tag
 	VALUE
+	// Separator between a a tag and a value
 	TAGVALUESEPARATOR
 
+	// Refer to the FIX message format documentation
 	TAGVERSION     string = "8"
 	TAGBODYLENGTH  string = "9"
 	TAGMSGTYPE     string = "35"
