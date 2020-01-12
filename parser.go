@@ -66,10 +66,19 @@ func (p *Parser) Parse() (*Message, error) {
 	err := m.Validate()
 	if err != nil {
 		p.incorrectMessages += 1
+		return nil, err
 	} else {
 		p.correctMessages += 1
+		return m, err
 	}
-	return m, err
+}
+
+func (p *Parser) NumCorrectMessages() int {
+	return p.correctMessages
+}
+
+func (p *Parser) NumIncorrectMessages() int {
+	return p.incorrectMessages
 }
 
 func (p *Parser) scan() (tok Token, lit string) {
