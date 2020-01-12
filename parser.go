@@ -67,10 +67,9 @@ func (p *Parser) Parse() (*Message, error) {
 	if err != nil {
 		p.incorrectMessages += 1
 		return nil, err
-	} else {
-		p.correctMessages += 1
-		return m, err
 	}
+	p.correctMessages += 1
+	return m, err
 }
 
 func (p *Parser) NumCorrectMessages() int {
